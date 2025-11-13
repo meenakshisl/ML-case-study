@@ -13,6 +13,7 @@ from utils import (
     build_pipelines,
     run_experiment,
     make_barplot,
+    make_barplot_metric,
     plot_confusion_matrix,
     stratified_sample,
 )
@@ -67,6 +68,11 @@ def main() -> None:
     barplot_path = os.path.join(args.output_dir, "metrics_barplot.png")
     make_barplot(results, output_path=barplot_path)
     print(f"Wrote bar plot to {barplot_path}")
+
+    # Plot recall barplot
+    recall_barplot_path = os.path.join(args.output_dir, "metrics_barplot_recall.png")
+    make_barplot_metric(results, metric="rec", output_path=recall_barplot_path)
+    print(f"Wrote recall bar plot to {recall_barplot_path}")
 
     # Save a few confusion matrices for the highest flip fraction
     max_frac = max(args.flip_fracs)

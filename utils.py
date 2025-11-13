@@ -226,6 +226,22 @@ def make_barplot(results: pd.DataFrame, output_path: Optional[str] = None) -> pl
     return fig
 
 
+def make_barplot_metric(results: pd.DataFrame, metric: str, output_path: Optional[str] = None) -> plt.Figure:
+    if metric not in {"acc", "prec", "rec"}:
+        raise ValueError(f"Unsupported metric '{metric}'. Choose one of: acc, prec, rec")
+    pivot = results.pivot(index="model", columns="flip_frac", values=metric)
+    fig, ax = plt.subplots(figsize=(10, 5))
+    pivot.plot(kind="bar", ax=ax)
+    title_map = {"acc": "Accuracy", "prec": "Precision", "rec": "Recall"}
+    ax.set_title(f"{title_map[metric]} by Model and Flip Fraction")
+    ax.set_ylabel(title_map[metric])
+    ax.set_xlabel("Model")
+    ax.legend(title="Flip Fraction")
+    fig.tight_layout()
+    if output_path:
+        fig.savefig(output_path, dpi=150)
+    return fig
+
 def plot_confusion_matrix(cm: np.ndarray, class_labels: List[str], title: str, output_path: Optional[str] = None) -> plt.Figure:
     fig, ax = plt.subplots(figsize=(4.5, 4))
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False, ax=ax,
